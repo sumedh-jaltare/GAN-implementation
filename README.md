@@ -48,7 +48,7 @@ Checkpoints are written to `checkpoints/`. Sample grids go to `training_samples/
 ## Generate
 
 ```bash
-python generate.py --checkpoint checkpoints/<your_checkpoint>.pth --out output/samples.png
+python generate.py --checkpoint checkpoints/<your_checkpoint>.pth --output-dir output --num-images 16
 ```
 
 ## Requirements
