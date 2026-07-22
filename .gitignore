@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Training outputs / model weights
+**/checkpoints/
+**/training_samples/
+**/output/
+**/training_log.csv
+**/*.pth
+
+# Dataset images (keep annotations if present)
+**/train/*.jpg
+**/train/*.jpeg
+**/train/*.png
+**/train/*.webp
+**/train/*.bmp
+
+# Local data paths
+**/data/train
