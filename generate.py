@@ -39,12 +39,14 @@ def parse_args():
 
 def load_generator(checkpoint_path, device):
     checkpoint = torch.load(checkpoint_path, map_location=device)
-    if "generator_state_dict" not in checkpoint:
+    # train.py saves "model_state_dict"; older/export files may use "generator_state_dict"
+    state_dict = checkpoint.get("generator_state_dict") or checkpoint.get("model_state_dict")
+    if state_dict is None:
         raise KeyError(
-            f"Invalid checkpoint: missing 'generator_state_dict' in {checkpoint_path}"
+            f"Invalid checkpoint: missing 'generator_state_dict' or 'model_state_dict' in {checkpoint_path}"
         )
     netG = Generator().to(device)
-    netG.load_state_dict(checkpoint["generator_state_dict"])
+    netG.load_state_dict(state_dict)
     netG.eval()
     return netG
 
