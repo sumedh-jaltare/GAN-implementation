@@ -1,59 +1,54 @@
-# GAN Implementation
+# GAN Research Experiments
 
-DCGAN implementations for generating images at three resolutions: **128×128**, **256×256**, and **512×512**.
+Reproducible DCGAN / WGAN experiments sharing one dataset.
 
-## Project layout
+## Layout
 
 ```
-GAN_128/   # 128×128 model, training, and generation
-GAN_256/   # 256×256 model, training, and generation
-GAN_512/   # 512×512 model, training, and generation
+experiments/
+├── README.md
+├── .gitignore
+├── dataset/train/          # shared training images
+├── GAN_128/                # DCGAN 128×128 (completed)
+├── GAN_256/                # DCGAN 256×256 (completed)
+├── GAN_512/                # DCGAN 512×512 (completed)
+└── WGAN_256/               # WGAN-GP 256×256
 ```
 
-Each folder contains:
+Each experiment folder is self-contained (`train.py`, `models.py`, `generate.py`, `utils.py`, `config.py`) and loads images from `../dataset/train`.
 
-| File | Description |
-|------|-------------|
-| `models.py` | Generator and Discriminator |
-| `train.py` | Training loop and CLI |
-| `generate.py` | Sample generation from a checkpoint |
-| `utils.py` | Data loading helpers |
-| `requirements.txt` | Python dependencies |
+## Experiment summary
+
+| Experiment | Model | Resolution | Status | Batch | LR | Epochs |
+|------------|-------|------------|--------|-------|-----|--------|
+| `GAN_128` | DCGAN | 128×128 | Completed | 32 | 0.0002 | 100 |
+| `GAN_256` | DCGAN | 256×256 | Completed | 16 | G 0.0002 / D 0.0001 | 100 |
+| `GAN_512` | DCGAN | 512×512 | Completed | 8 | 0.0002 | 100 |
+| `WGAN_256` | WGAN-GP | 256×256 | Ready to train | 16 | 0.0001 (β=(0,0.9)), n_critic=5, λ=10 | 100 |
 
 ## Setup
 
 ```bash
-cd GAN_128   # or GAN_256 / GAN_512
+cd GAN_128   # or GAN_256 / GAN_512 / WGAN_256
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Place training images under `data/train/` (or pass `--dataroot`).
+Place training images in `dataset/train/` (already shared across experiments).
 
-## Train
+## Train / generate
 
 ```bash
+cd GAN_128
 python train.py
+python generate.py --checkpoint checkpoints/generator_latest.pth --num-images 1
 ```
 
-Useful flags (defaults differ by resolution):
+Resume:
 
 ```bash
-python train.py --epochs 100 --batch-size 32 --image-size 128
+python train.py --resume checkpoints/generator_latest.pth
 ```
 
-Checkpoints are written to `checkpoints/`. Sample grids go to `training_samples/`.
-
-## Generate
-
-```bash
-python generate.py --checkpoint checkpoints/<your_checkpoint>.pth --output-dir output --num-images 16
-```
-
-## Requirements
-
-- Python 3.9+
-- `torch>=2.0.0`
-- `torchvision>=0.15.0`
-- `Pillow>=9.0.0`
+Hyperparameters and paths live in each experiment’s `config.py`.

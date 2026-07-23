@@ -9,11 +9,13 @@ from utils import get_device, save_generated_images
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Generate synthetic images with a trained DCGAN generator.")
+    parser = argparse.ArgumentParser(
+        description="Generate synthetic 256x256 images with a trained WGAN-GP generator."
+    )
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="generator.pth",
+        default="checkpoints/generator_latest.pth",
         help="Path to the trained generator checkpoint.",
     )
     parser.add_argument(
@@ -39,14 +41,14 @@ def parse_args():
 
 
 def load_generator(checkpoint_path, device):
-    checkpoint = torch.load(checkpoint_path, map_location=device)
-    if "generator_state_dict" in checkpoint:
-        state_dict = checkpoint["generator_state_dict"]
-    elif "model_state_dict" in checkpoint:
+    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    if "model_state_dict" in checkpoint:
         state_dict = checkpoint["model_state_dict"]
+    elif "generator_state_dict" in checkpoint:
+        state_dict = checkpoint["generator_state_dict"]
     else:
         raise KeyError(
-            f"Invalid checkpoint: missing 'generator_state_dict' or 'model_state_dict' "
+            f"Invalid checkpoint: missing 'model_state_dict' or 'generator_state_dict' "
             f"in {checkpoint_path}"
         )
     netG = Generator().to(device)
@@ -81,6 +83,8 @@ def generate():
             current_batch = min(args.batch_size, args.num_images - generated)
             noise = torch.randn(current_batch, nz, 1, 1, device=device)
             fake = netG(noise)
+            if fake.shape[-1] != 256 or fake.shape[-2] != 256:
+                raise RuntimeError(f"Expected 256x256 images, got {tuple(fake.shape)}")
             save_generated_images(fake, args.output_dir, start_index=generated)
             generated += current_batch
 

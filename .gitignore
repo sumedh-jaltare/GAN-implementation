@@ -8,6 +8,7 @@ dist/
 build/
 .venv/
 venv/
+**/venv/
 env/
 
 # OS
@@ -26,13 +27,33 @@ Thumbs.db
 **/output/
 **/training_log.csv
 **/*.pth
+checkpoints/*.tmp
 
-# Dataset images (keep annotations if present)
+# Generated temporary files
+*.tmp
+*.temp
+*~
+
+# Shared flat training images used by GAN / WGAN experiments
+dataset/train/*
+!dataset/train/.gitkeep
+
+# YOLO / Roboflow source datasets (images + labels are large)
+microplastic_detection.v1i.yolov8/
+**/microplastic_detection.v1i.yolov8/
+
+# Common image / label artifacts anywhere under dataset exports
+**/train/images/
+**/train/labels/
+**/valid/images/
+**/valid/labels/
+**/test/images/
+**/test/labels/
 **/train/*.jpg
 **/train/*.jpeg
 **/train/*.png
 **/train/*.webp
 **/train/*.bmp
 
-# Local data paths
+# Legacy local data paths
 **/data/train

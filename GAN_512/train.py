@@ -9,21 +9,33 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.utils as vutils
 
+from config import (
+    BATCH_SIZE,
+    BETA1,
+    BETA2,
+    CHECKPOINT_DIR,
+    DATASET_PATH,
+    EPOCHS,
+    FIXED_SAMPLE_COUNT,
+    IMAGE_SIZE,
+    LATENT_DIM,
+    LEARNING_RATE,
+    NUM_WORKERS,
+    SAMPLE_DIR,
+    TRAINING_LOG_CSV,
+)
 from models import Discriminator, Generator, nz, weights_init
 from utils import get_dataloader
 
-# Default training hyperparameters (overridable via CLI).
-DEFAULT_NUM_EPOCHS = 100
-DEFAULT_BATCH_SIZE = 8
-DEFAULT_LR = 0.0002
-DEFAULT_NZ = nz
-DEFAULT_BETA1 = 0.5
-DEFAULT_BETA2 = 0.999
+# Defaults sourced from config.py (overridable via CLI).
+DEFAULT_NUM_EPOCHS = EPOCHS
+DEFAULT_BATCH_SIZE = BATCH_SIZE
+DEFAULT_LR = LEARNING_RATE
+DEFAULT_NZ = LATENT_DIM
+DEFAULT_BETA1 = BETA1
+DEFAULT_BETA2 = BETA2
 
-CHECKPOINT_DIR = "checkpoints"
-TRAINING_SAMPLES_DIR = "training_samples"
-TRAINING_LOG_CSV = "training_log.csv"
-FIXED_SAMPLE_COUNT = 16
+TRAINING_SAMPLES_DIR = SAMPLE_DIR
 
 CSV_FIELDNAMES = [
     "epoch",
@@ -49,10 +61,10 @@ def get_training_device():
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train a DCGAN on custom image data.")
-    parser.add_argument("--dataroot", type=str, default="data/train", help="Path to training images.")
-    parser.add_argument("--workers", type=int, default=2, help="Number of dataloader workers.")
+    parser.add_argument("--dataroot", type=str, default=DATASET_PATH, help="Path to training images.")
+    parser.add_argument("--workers", type=int, default=NUM_WORKERS, help="Number of dataloader workers.")
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE, help="Training batch size.")
-    parser.add_argument("--image-size", type=int, default=512, help="Spatial size of training images.")
+    parser.add_argument("--image-size", type=int, default=IMAGE_SIZE, help="Spatial size of training images.")
     parser.add_argument("--epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of training epochs.")
     parser.add_argument("--lr", type=float, default=DEFAULT_LR, help="Learning rate for Adam.")
     parser.add_argument("--nz", type=int, default=DEFAULT_NZ, help="Latent vector size for the generator input.")

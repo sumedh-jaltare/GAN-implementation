@@ -3,6 +3,7 @@ import os
 
 import torch
 
+from config import OUTPUT_DIR
 from models import Generator, nz
 from utils import get_device, save_generated_images
 
@@ -24,7 +25,7 @@ def parse_args():
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="output",
+        default=OUTPUT_DIR,
         help="Directory where generated PNG files will be saved.",
     )
     parser.add_argument(
